@@ -1,0 +1,92 @@
+:root {
+  --background: #07111d;
+  --surface: rgba(9, 18, 31, 0.78);
+  --surface-strong: rgba(12, 23, 40, 0.92);
+  --surface-soft: rgba(255, 255, 255, 0.06);
+  --border: rgba(163, 201, 255, 0.18);
+  --text: #eff6ff;
+  --muted: #9bb2cb;
+  --accent: #7fe0c3;
+  --accent-strong: #40d7ff;
+  --warning: #ffcb74;
+  --shadow: 0 20px 70px rgba(0, 0, 0, 0.35);
+  --radius: 28px;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Manrope', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  width: 100%;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: var(--font-body);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top left, rgba(64, 215, 255, 0.18), transparent 28%),
+    radial-gradient(circle at top right, rgba(127, 224, 195, 0.16), transparent 24%),
+    linear-gradient(180deg, #09111c 0%, #06101a 100%);
+}
+
+html,
+body,
+body > div,
+body > div > main {
+  width: 100%;
+  height: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.shell {
+.map-panel {
+  position: relative;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  border-radius: 0;
+  min-height: 100vh;
+}
+
+.onemap-map-canvas {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+}
+
+.onemap-map-canvas .leaflet-container {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  background: #0a1220;
+}
+
+.onemap-map-canvas .leaflet-control-attribution {
+  background: rgba(5, 10, 17, 0.85);
+  color: var(--muted);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.onemap-map-canvas .leaflet-control-attribution a {
+  color: var(--text);
+}
+
+.onemap-map-canvas .leaflet-control-zoom a {
+  background: rgba(9, 18, 31, 0.9);
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.08);
+}
