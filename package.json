@@ -6,11 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "db:sync-bus-stops": "node scripts/sync-bus-stops.mjs"
   },
   "dependencies": {
     "leaflet": "^1.9.4",
     "next": "16.2.10",
+    "pg": "^8.22.0",
     "react": "19.1.1",
     "react-dom": "19.1.1"
   },

@@ -12,6 +12,7 @@ export default function OneMapMap() {
     }
 
     let activeMap: import('leaflet').Map | null = null;
+    let removeClickHandler: (() => void) | null = null;
 
     void import('leaflet').then((leaflet) => {
       if (!mapRef.current) {
@@ -41,10 +42,40 @@ export default function OneMapMap() {
         })
         .addTo(map);
 
+      const handleMapClick = async (event: import('leaflet').LeafletMouseEvent) => {
+        const { lat, lng } = event.latlng;
+        const coordinates = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+
+        try {
+          if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(coordinates);
+            return;
+          }
+
+          const fallbackInput = document.createElement('input');
+          fallbackInput.value = coordinates;
+          fallbackInput.setAttribute('readonly', 'true');
+          fallbackInput.style.position = 'absolute';
+          fallbackInput.style.left = '-9999px';
+          document.body.appendChild(fallbackInput);
+          fallbackInput.select();
+          document.execCommand('copy');
+          document.body.removeChild(fallbackInput);
+        } catch {
+          // Intentionally silent: clipboard copy is best-effort only.
+        }
+      };
+
+      map.on('click', handleMapClick);
+      removeClickHandler = () => {
+        map.off('click', handleMapClick);
+      };
+
       activeMap = map;
     });
 
     return () => {
+      removeClickHandler?.();
       activeMap?.remove();
     };
   }, []);

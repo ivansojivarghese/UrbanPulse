@@ -22,3 +22,18 @@ UrbanPulse is a Next.js starter for a Singapore pedestrian traffic analyser.
 npm install
 npm run dev
 ```
+
+## Bus stop startup sync
+
+Before starting the app, you can download the full LTA DataMall BusStops dataset into PostgreSQL/PostGIS with:
+
+```bash
+npm run db:sync-bus-stops
+```
+
+Required environment variables:
+
+- `DATABASE_URL`
+- `LTA_DATA_MALL_ACCOUNT_KEY`
+
+The sync script creates the `bus_stops` table, enables `postgis` if available, and creates a GiST index on the geometry column.
