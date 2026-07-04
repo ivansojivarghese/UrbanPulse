@@ -37,3 +37,67 @@ Required environment variables:
 - `LTA_DATA_MALL_ACCOUNT_KEY`
 
 The sync script creates the `bus_stops` table, enables `postgis` if available, and creates a GiST index on the geometry column.
+
+## API endpoints
+
+``` GET /api/bus-stops/nearby ```
+
+``` GET /api/mrt/nearby ```
+
+### Nearby bus stops
+
+``` http://localhost:3000/api/bus-stops/nearby?lat=1.3521&lng=103.8198&radius=500 ```
+
+Response:
+
+```
+[
+  {
+    "bus_stop_code": "03011",
+    "description": "Opp Fullerton Sq",
+    "road_name": "Fullerton Rd",
+    "distance": 85.2
+  },
+  {
+    "bus_stop_code": "03012",
+    "description": "Fullerton Sq",
+    "road_name": "Fullerton Rd",
+    "distance": 104.7
+  }
+]
+
+```
+
+### Nearby MRT stations
+
+``` http://localhost:3000/api/mrt/nearby?lat=1.3521&lng=103.8198&radius=1000 ```
+
+Response:
+
+```
+
+[
+    {
+        "id": "NE17",
+        "name": "PUNGGOL MRT STATION",
+        "lat": 1.40428756587,
+        "lon": 103.901946796,
+        "road": "PUNGGOL CENTRAL"
+    },
+    {
+        "id": "PTC",
+        "name": "PUNGGOL LRT STATION",
+        "lat": 1.40541051607,
+        "lon": 103.902522218,
+        "road": "PUNGGOL CENTRAL"
+    },
+    {
+        "id": "PW7",
+        "name": "SOO TECK LRT STATION",
+        "lat": 1.40527842114,
+        "lon": 103.897294735,
+        "road": "PUNGGOL WAY"
+    },
+]
+
+```
