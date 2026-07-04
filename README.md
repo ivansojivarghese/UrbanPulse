@@ -23,14 +23,6 @@ npm install
 npm run dev
 ```
 
-## Bus stop startup sync
-
-Before starting the app, you can download the full LTA DataMall BusStops dataset into PostgreSQL/PostGIS with:
-
-```bash
-npm run db:sync-bus-stops
-```
-
 Required environment variables:
 
 - `DATABASE_URL`
@@ -38,8 +30,6 @@ Required environment variables:
 - `ONEMAP_API_EMAIL`
 - `ONEMAP_API_PASSWORD`
 - `ONEMAP_BASE_URL`
-
-The sync script creates the `bus_stops` table, enables `postgis` if available, and creates a GiST index on the geometry column.
 
 ## API endpoints
 
