@@ -10,6 +10,7 @@
     "db:sync-bus-stops": "node scripts/sync-bus-stops.mjs"
   },
   "dependencies": {
+    "dotenv": "^17.4.2",
     "leaflet": "^1.9.4",
     "next": "16.2.10",
     "pg": "^8.22.0",
