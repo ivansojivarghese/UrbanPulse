@@ -35,6 +35,9 @@ Required environment variables:
 
 - `DATABASE_URL`
 - `LTA_DATA_MALL_ACCOUNT_KEY`
+- `ONEMAP_API_EMAIL`
+- `ONEMAP_API_PASSWORD`
+- `ONEMAP_BASE_URL`
 
 The sync script creates the `bus_stops` table, enables `postgis` if available, and creates a GiST index on the geometry column.
 
