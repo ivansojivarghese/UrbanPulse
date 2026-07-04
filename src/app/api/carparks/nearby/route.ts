@@ -5,7 +5,8 @@ import { pool } from "@/lib/ds";
 import { haversineDistance } from "@/lib/distance";
 
 import {
-    getMergedHDBCarparks
+    getMergedHDBCarparks,
+    getURACapacityMap
 } from "@/lib/dataGov";
 
 import {
@@ -135,6 +136,8 @@ export async function GET(req: NextRequest) {
 
                 uraCarparks,
 
+                uraCapacityMap,
+
                 hdbCarparks
 
             ] = await Promise.all([
@@ -145,72 +148,275 @@ export async function GET(req: NextRequest) {
 
                 getMergedCarparks(),
 
+                getURACapacityMap(),
+
                 getMergedHDBCarparks()
 
             ]);
     
+            /*
             const uraMap = new Map<string, any>();
 
             for (const cp of uraCarparks) {
                 uraMap.set(cp.ppCode, cp);
+            }*/
+
+            const uraMap = new Map<string, any[]>();
+
+            for (const cp of uraCarparks) {
+
+                const existing =
+                    uraMap.get(cp.ppCode) ?? [];
+
+                existing.push(cp);
+
+                uraMap.set(
+                    cp.ppCode,
+                    existing
+                );
+
             }
+/*
+            const nearbyHDB = hdbCarparks
+            .map(cp => {
+
+                const distance = haversineDistance(
+
+                    lat,
+
+                    lng,
+
+                    cp.latitude,
+
+                    cp.longitude
+
+                );
+
+                return {
+
+                    id: cp.carpark_number,
+
+                    area: "HDB",
+
+                    development: cp.address,
+
+                    latitude: cp.latitude,
+
+                    longitude: cp.longitude,
+
+                    distance,
+
+                    availableLots: getAvailableLots(cp),
+
+                    totalLots: getTotalLots(cp),
+
+                    source: "DataGov",
+
+                    lta: null,
+
+                    ura: null,
+
+                    dataGov: cp
+
+                };
+
+            })
+            .filter(cp => cp.distance <= radius);*/
 
             const nearbyHDB = hdbCarparks
-        .map(cp => {
+    .map(cp => {
 
-            const distance = haversineDistance(
+        const distance = haversineDistance(
+            lat,
+            lng,
+            cp.latitude,
+            cp.longitude
+        );
 
-                lat,
+        const car =
+            cp.carpark_info.find(x => x.lot_type === "C");
 
-                lng,
+        const motorcycle =
+            cp.carpark_info.find(x => x.lot_type === "Y");
 
-                cp.latitude,
+        const heavy =
+            cp.carpark_info.find(x => x.lot_type === "H");
 
-                cp.longitude
+        const carCapacity = car ? Number(car.total_lots) : null;
+        const bikeCapacity = motorcycle ? Number(motorcycle.total_lots) : null;
+        const heavyCapacity = heavy ? Number(heavy.total_lots) : null;
 
-            );
+        const carAvailable = car ? Number(car.lots_available) : null;
+        const bikeAvailable = motorcycle ? Number(motorcycle.lots_available) : null;
+        const heavyAvailable = heavy ? Number(heavy.lots_available) : null;
 
-            return {
+        return {
 
-                id: cp.carpark_number,
+            id: cp.carpark_number,
 
-                area: "HDB",
+            area: "HDB",
 
-                development: cp.address,
+            development: cp.address,
 
-                latitude: cp.latitude,
+            latitude: cp.latitude,
 
-                longitude: cp.longitude,
+            longitude: cp.longitude,
 
-                distance,
+            distance,
 
-                availableLots: getAvailableLots(cp),
+            availableLots: getAvailableLots(cp),
 
-                totalLots: getTotalLots(cp),
+            totalLots: getTotalLots(cp),
 
-                source: "DataGov",
+            source: "DataGov",
 
-                lta: null,
+            
+            lots: {
 
-                ura: null,
+                    car: {
 
-                dataGov: cp
+                        available:
+                            carAvailable === 0 && carCapacity == null
+                                ? 0
+                                : carAvailable,
 
-            };
+                        capacity:
+                            carCapacity == null && carAvailable === 0
+                                ? 0
+                                : carCapacity
 
-        })
-        .filter(cp => cp.distance <= radius);
+                    },
+
+                    motorcycle: {
+
+                        available:
+                            bikeAvailable === 0 && bikeCapacity == null
+                                ? 0
+                                : bikeAvailable,
+
+                        capacity:
+                            bikeCapacity == null && bikeAvailable === 0
+                                ? 0
+                                : bikeCapacity
+
+                    },
+
+                    heavyVehicle: {
+
+                        available:
+                            heavyAvailable === 0 && heavyCapacity == null
+                                ? 0
+                                : heavyAvailable,
+
+                        capacity:
+                            heavyCapacity == null && heavyAvailable === 0
+                                ? 0
+                                : heavyCapacity
+
+                },
+
+                /*
+                car: {
+
+                    available: car
+                        ? Number(car.lots_available)
+                        : null,
+
+                    capacity: car
+                        ? Number(car.total_lots)
+                        : null
+
+                },
+
+                motorcycle: {
+
+                    available: motorcycle
+                        ? Number(motorcycle.lots_available)
+                        : null,
+
+                    capacity: motorcycle
+                        ? Number(motorcycle.total_lots)
+                        : null
+
+                },
+
+                heavyVehicle: {
+
+                    available: heavy
+                        ? Number(heavy.lots_available)
+                        : null,
+
+                    capacity: heavy
+                        ? Number(heavy.total_lots)
+                        : null
+
+                }
+                */
+
+                /*
+                car: {
+
+                    available: getAvailableLots(cp),
+
+                    capacity: getTotalLots(cp)
+
+                },
+
+                motorcycle: {
+
+                    available: null,
+
+                    capacity: null
+
+                },
+
+                heavyVehicle: {
+
+                    available: null,
+
+                    capacity: null
+
+                }*/
+
+            },
+
+            lta: null,
+
+            ura: null,
+
+            dataGov: cp
+
+        };
+
+    })
+    .filter(cp => cp.distance <= radius);
 
         /* ---------------------------------------------------- */
         /* Merge                                                */
         /* ---------------------------------------------------- */
 
+        /*
         const merged = nearby.map(cp => {
 
             
+            // const lta = ltaMap.get(cp.carpark_id);
             const lta = ltaMap.get(cp.carpark_id);
             const dg = dataGovMap.get(cp.carpark_id);
             const ura = uraMap.get(cp.carpark_id);
+
+            const ltaLots = {
+                C: 0,
+                Y: 0,
+                H: 0
+            };
+
+            const records =
+                ltaMap.get(cp.carpark_id) ?? [];
+
+            for (const r of records) {
+                ltaLots[r.LotType] =
+                    Number(r.AvailableLots);
+            }
 
             let availableLots = null;
             let totalLots = null;
@@ -246,11 +452,227 @@ export async function GET(req: NextRequest) {
                 totalLots,
                 source,
 
+                lots: ura ? {
+
+                    car: {
+
+                        capacity:
+                            ura.NO_CAR,
+
+                        available:
+                            ltaLots.C
+
+                    },
+
+                    motorcycle: {
+
+                        capacity:
+                            ura.NO_MCYCLE,
+
+                        available:
+                            ltaLots.Y
+
+                    },
+
+                    heavyVehicle: {
+
+                        capacity:
+                            ura.NO_H_VEHIC,
+
+                        available:
+                            ltaLots.H
+
+                    }
+
+                } : null,
+
                 lta,
                 ura,
                 dataGov: dg
             };
         });
+        */
+
+        const merged = nearby.map(cp => {
+
+        const records = ltaMap.get(cp.carpark_id) ?? [];
+        const dg = dataGovMap.get(cp.carpark_id);
+        // const ura = uraMap.get(cp.carpark_id);
+        const uraRecords =
+            uraMap.get(cp.carpark_id) ?? [];
+
+        const capacity =
+            uraCapacityMap.get(cp.carpark_id);
+
+        const ltaLots = {
+            C: 0,
+            Y: 0,
+            H: 0
+        };
+
+        let agency: string | null = null;
+
+        for (const r of records) {
+
+            if (r.LotType === "C")
+                ltaLots.C = Number(r.AvailableLots);
+
+            else if (r.LotType === "Y")
+                ltaLots.Y = Number(r.AvailableLots);
+
+            else if (r.LotType === "H")
+                ltaLots.H = Number(r.AvailableLots);
+
+            agency = r.Agency;
+        }
+
+        let availableLots: number | null = null;
+        let totalLots: number | null = null;
+        let source: string | null = null;
+
+        if (capacity) {
+
+            availableLots =
+                ltaLots.C +
+                ltaLots.Y +
+                ltaLots.H;
+
+            totalLots =
+                Number(capacity.NO_CAR) +
+                Number(capacity.NO_MCYCLE) +
+                Number(capacity.NO_H_VEHIC);
+
+            source = "URA";
+
+        }
+        else if (dg) {
+
+            availableLots = getAvailableLots(dg);
+            totalLots = getTotalLots(dg);
+            source = "DataGov";
+
+        }
+        else if (records.length > 0) {
+
+            availableLots =
+                ltaLots.C +
+                ltaLots.Y +
+                ltaLots.H;
+
+            source = "LTA";
+        }
+
+        const carCapacity = capacity?.NO_CAR;
+        const bikeCapacity = capacity?.NO_MCYCLE;
+        const heavyCapacity = capacity?.NO_H_VEHIC;
+
+        const carAvailable = ltaLots.C;
+        const bikeAvailable = ltaLots.Y;
+        const heavyAvailable = ltaLots.H;
+
+        return {
+
+            id: cp.carpark_id,
+
+            area: cp.area,
+
+            development: cp.development,
+
+            latitude: cp.latitude,
+
+            longitude: cp.longitude,
+
+            distance: Math.round(Number(cp.distance)),
+
+            availableLots,
+            totalLots,
+            source,
+
+            /*
+            lots: {
+
+                car: {
+
+                    available: ltaLots.C,
+                    capacity: capacity?.NO_CAR ?? null
+
+                },
+
+                motorcycle: {
+
+                    available: ltaLots.Y,
+                    capacity: capacity?.NO_MCYCLE ?? null
+
+                },
+
+                heavyVehicle: {
+
+                    available: ltaLots.H,
+                    capacity: capacity?.NO_H_VEHIC ?? null
+
+                }
+
+            },*/
+
+            lots: {
+
+                car: {
+
+                    available:
+                        carAvailable === 0 && carCapacity == null
+                            ? 0
+                            : carAvailable,
+
+                    capacity:
+                        carCapacity == null && carAvailable === 0
+                            ? 0
+                            : carCapacity
+
+                },
+
+                motorcycle: {
+
+                    available:
+                        bikeAvailable === 0 && bikeCapacity == null
+                            ? 0
+                            : bikeAvailable,
+
+                    capacity:
+                        bikeCapacity == null && bikeAvailable === 0
+                            ? 0
+                            : bikeCapacity
+
+                },
+
+                heavyVehicle: {
+
+                    available:
+                        heavyAvailable === 0 && heavyCapacity == null
+                            ? 0
+                            : heavyAvailable,
+
+                    capacity:
+                        heavyCapacity == null && heavyAvailable === 0
+                            ? 0
+                            : heavyCapacity
+
+                }
+
+            },
+
+            lta: records,
+
+            ura: uraRecords,
+
+            capacity,
+
+            dataGov: dg,
+
+            agency
+
+        };
+
+    });
 
         const combined = [
 

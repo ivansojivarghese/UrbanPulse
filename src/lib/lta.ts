@@ -82,7 +82,7 @@ export async function getLTACarparkAvailability(): Promise<LTACarpark[]> {
 /* -------------------------------------------------------------------------- */
 /*                          Convenience Lookup Map                            */
 /* -------------------------------------------------------------------------- */
-
+/*
 export async function getLTACarparkMap() {
 
     const carparks = await getLTACarparkAvailability();
@@ -91,10 +91,38 @@ export async function getLTACarparkMap() {
 
     for (const cp of carparks) {
 
-        map.set(cp.CarParkID, cp);
+        // map.set(cp.CarParkID, cp);
+
+        const existing =
+            map.get(cp.CarParkID) ?? [];
+
+        existing.push(cp);
+
+        map.set(
+            cp.CarParkID,
+            existing
+        );
 
     }
 
     return map;
 
+}*/
+
+export async function getLTACarparkMap() {
+
+    const carparks = await getLTACarparkAvailability();
+
+    const map = new Map<string, LTACarpark[]>();
+
+    for (const cp of carparks) {
+
+        const existing = map.get(cp.CarParkID) ?? [];
+
+        existing.push(cp);
+
+        map.set(cp.CarParkID, existing);
+    }
+
+    return map;
 }

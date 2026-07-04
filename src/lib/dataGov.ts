@@ -3,6 +3,7 @@ import axios from "axios";
 import { svy21ToWGS84 } from "./svy21";
 
 const BASE_URL = "https://api.data.gov.sg";
+// const BASE_URL = process.env.DATA_GOV_BASE_URL;
 
 const API_KEY = process.env.DATA_GOV_API_KEY;
 
@@ -12,6 +13,15 @@ if (!API_KEY) {
 
 const client = axios.create({
     baseURL: BASE_URL,
+    timeout: 10000,
+    headers: {
+        "x-api-key": API_KEY,
+        accept: "application/json"
+    }
+});
+
+const openClient = axios.create({
+    baseURL: "https://api-open.data.gov.sg",
     timeout: 10000,
     headers: {
         "x-api-key": API_KEY,
@@ -43,6 +53,18 @@ export interface DataGovCarpark {
     update_datetime: string;
 
     carpark_info: DataGovLot[];
+
+}
+
+export interface URACapacity {
+
+    PP_CODE: string;
+
+    NO_CAR: number;
+
+    NO_MCYCLE: number;
+
+    NO_H_VEHIC: number;
 
 }
 
@@ -145,6 +167,58 @@ export async function getDataGovCarparkAvailability(): Promise<DataGovCarpark[]>
     }
 
     return response.data.items[0].carpark_data;
+
+}
+
+export interface URACapacityFeature {
+    properties: {
+        PP_CODE: string;
+        NO_CAR: number;
+        NO_MCYCLE: number;
+        NO_H_VEHIC: number;
+    };
+}
+
+export async function getURACapacityDataset(): Promise<URACapacityFeature[]> {
+
+    const datasetId = "d_9bf8620ecfdc8a5f8f77e3f02160af5c";
+
+    // Step 1: obtain temporary download URL
+    const poll = await openClient.get(
+        `/v1/public/api/datasets/${datasetId}/poll-download`
+    );
+
+    const downloadUrl = poll.data.data.url;
+
+    // Step 2: download GeoJSON
+    const geojson = await axios.get(downloadUrl);
+
+    return geojson.data.features;
+}
+
+export async function getURACapacityMap() {
+
+    const features = await getURACapacityDataset();
+
+    const map = new Map<string, URACapacity>();
+
+    for (const f of features) {
+
+        map.set(f.properties.PP_CODE, {
+
+            PP_CODE: f.properties.PP_CODE,
+
+            NO_CAR: Number(f.properties.NO_CAR),
+
+            NO_MCYCLE: Number(f.properties.NO_MCYCLE),
+
+            NO_H_VEHIC: Number(f.properties.NO_H_VEHIC)
+
+        });
+
+    }
+
+    return map;
 
 }
 
