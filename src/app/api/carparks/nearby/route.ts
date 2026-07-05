@@ -250,6 +250,9 @@ export async function GET(req: NextRequest) {
         const bikeAvailable = motorcycle ? Number(motorcycle.lots_available) : null;
         const heavyAvailable = heavy ? Number(heavy.lots_available) : null;
 
+
+        // console.log(ltaMap);
+
         return {
 
             id: cp.carpark_number,
@@ -277,12 +280,12 @@ export async function GET(req: NextRequest) {
 
                         available:
                             carAvailable === 0 && carCapacity == null
-                                ? 0
+                                ? null
                                 : carAvailable,
 
                         capacity:
                             carCapacity == null && carAvailable === 0
-                                ? 0
+                                ? null
                                 : carCapacity
 
                     },
@@ -291,12 +294,12 @@ export async function GET(req: NextRequest) {
 
                         available:
                             bikeAvailable === 0 && bikeCapacity == null
-                                ? 0
+                                ? null
                                 : bikeAvailable,
 
                         capacity:
                             bikeCapacity == null && bikeAvailable === 0
-                                ? 0
+                                ? null
                                 : bikeCapacity
 
                     },
@@ -305,12 +308,12 @@ export async function GET(req: NextRequest) {
 
                         available:
                             heavyAvailable === 0 && heavyCapacity == null
-                                ? 0
+                                ? null
                                 : heavyAvailable,
 
                         capacity:
                             heavyCapacity == null && heavyAvailable === 0
-                                ? 0
+                                ? null
                                 : heavyCapacity
 
                 },
@@ -495,7 +498,12 @@ export async function GET(req: NextRequest) {
 
         const merged = nearby.map(cp => {
 
+            // console.log(cp.carpark_id);
+
         const records = ltaMap.get(cp.carpark_id) ?? [];
+
+        console.log(records)
+
         const dg = dataGovMap.get(cp.carpark_id);
         // const ura = uraMap.get(cp.carpark_id);
         const uraRecords =
@@ -562,9 +570,16 @@ export async function GET(req: NextRequest) {
             source = "LTA";
         }
 
-        const carCapacity = capacity?.NO_CAR;
-        const bikeCapacity = capacity?.NO_MCYCLE;
-        const heavyCapacity = capacity?.NO_H_VEHIC;
+        //const carCapacity = capacity?.NO_CAR;
+        //const bikeCapacity = capacity?.NO_MCYCLE;
+        //const heavyCapacity = capacity?.NO_H_VEHIC;
+
+        const carCapacity =
+    capacity?.NO_CAR ?? null;
+        const bikeCapacity =
+    capacity?.NO_MCYCLE ?? null;
+    const heavyCapacity =
+        capacity?.NO_H_VEHIC ?? null;
 
         const carAvailable = ltaLots.C;
         const bikeAvailable = ltaLots.Y;
@@ -620,12 +635,12 @@ export async function GET(req: NextRequest) {
 
                     available:
                         carAvailable === 0 && carCapacity == null
-                            ? 0
+                            ? null
                             : carAvailable,
 
                     capacity:
                         carCapacity == null && carAvailable === 0
-                            ? 0
+                            ? null
                             : carCapacity
 
                 },
@@ -634,12 +649,12 @@ export async function GET(req: NextRequest) {
 
                     available:
                         bikeAvailable === 0 && bikeCapacity == null
-                            ? 0
+                            ? null
                             : bikeAvailable,
 
                     capacity:
                         bikeCapacity == null && bikeAvailable === 0
-                            ? 0
+                            ? null
                             : bikeCapacity
 
                 },
@@ -648,12 +663,12 @@ export async function GET(req: NextRequest) {
 
                     available:
                         heavyAvailable === 0 && heavyCapacity == null
-                            ? 0
+                            ? null
                             : heavyAvailable,
 
                     capacity:
                         heavyCapacity == null && heavyAvailable === 0
-                            ? 0
+                            ? null
                             : heavyCapacity
 
                 }
