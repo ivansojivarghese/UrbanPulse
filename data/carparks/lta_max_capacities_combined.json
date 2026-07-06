@@ -1,0 +1,248 @@
+[
+    {
+        "CarParkID": "24",
+        "Development": "313@Somerset",
+        "ActualMaxObservedLots": 205,
+        "RoundedMaxObservedLots": 210
+    },
+    {
+        "CarParkID": "65",
+        "Development": "Bedok Mall",
+        "ActualMaxObservedLots": 182,
+        "RoundedMaxObservedLots": 190
+    },
+    {
+        "CarParkID": "58",
+        "Development": "Bt Panjang Plaza",
+        "ActualMaxObservedLots": 188,
+        "RoundedMaxObservedLots": 190
+    },
+    {
+        "CarParkID": "61",
+        "Development": "Bugis+",
+        "ActualMaxObservedLots": 301,
+        "RoundedMaxObservedLots": 310
+    },
+    {
+        "CarParkID": "59",
+        "Development": "CQ @ Clarke Quay",
+        "ActualMaxObservedLots": 347,
+        "RoundedMaxObservedLots": 350
+    },
+    {
+        "CarParkID": "21",
+        "Development": "Centrepoint",
+        "ActualMaxObservedLots": 361,
+        "RoundedMaxObservedLots": 370
+    },
+    {
+        "CarParkID": "11",
+        "Development": "Cineleisure",
+        "ActualMaxObservedLots": 278,
+        "RoundedMaxObservedLots": 280
+    },
+    {
+        "CarParkID": "22",
+        "Development": "Concorde Hotel",
+        "ActualMaxObservedLots": 275,
+        "RoundedMaxObservedLots": 280
+    },
+    {
+        "CarParkID": "4",
+        "Development": "Esplanade",
+        "ActualMaxObservedLots": 744,
+        "RoundedMaxObservedLots": 750
+    },
+    {
+        "CarParkID": "20",
+        "Development": "Far East Plaza",
+        "ActualMaxObservedLots": 495,
+        "RoundedMaxObservedLots": 500
+    },
+    {
+        "CarParkID": "66",
+        "Development": "Funan Mall",
+        "ActualMaxObservedLots": 393,
+        "RoundedMaxObservedLots": 400
+    },
+    {
+        "CarParkID": "19",
+        "Development": "Harbourfront Centre",
+        "ActualMaxObservedLots": 1075,
+        "RoundedMaxObservedLots": 1080
+    },
+    {
+        "CarParkID": "12",
+        "Development": "Hilton Orchard",
+        "ActualMaxObservedLots": 181,
+        "RoundedMaxObservedLots": 190
+    },
+    {
+        "CarParkID": "53",
+        "Development": "IMM Building",
+        "ActualMaxObservedLots": 1193,
+        "RoundedMaxObservedLots": 1200
+    },
+    {
+        "CarParkID": "23",
+        "Development": "ION Orchard",
+        "ActualMaxObservedLots": 483,
+        "RoundedMaxObservedLots": 490
+    },
+    {
+        "CarParkID": "64",
+        "Development": "Junction 8",
+        "ActualMaxObservedLots": 181,
+        "RoundedMaxObservedLots": 190
+    },
+    {
+        "CarParkID": "62",
+        "Development": "Lot One",
+        "ActualMaxObservedLots": 152,
+        "RoundedMaxObservedLots": 160
+    },
+    {
+        "CarParkID": "2",
+        "Development": "Marina Square",
+        "ActualMaxObservedLots": 1671,
+        "RoundedMaxObservedLots": 1680
+    },
+    {
+        "CarParkID": "5",
+        "Development": "Millenia Singapore",
+        "ActualMaxObservedLots": 1202,
+        "RoundedMaxObservedLots": 1210
+    },
+    {
+        "CarParkID": "56",
+        "Development": "National Gallery",
+        "ActualMaxObservedLots": 205,
+        "RoundedMaxObservedLots": 210
+    },
+    {
+        "CarParkID": "13",
+        "Development": "Ngee Ann City",
+        "ActualMaxObservedLots": 1122,
+        "RoundedMaxObservedLots": 1130
+    },
+    {
+        "CarParkID": "27",
+        "Development": "Orchard Central",
+        "ActualMaxObservedLots": 272,
+        "RoundedMaxObservedLots": 280
+    },
+    {
+        "CarParkID": "52",
+        "Development": "Orchard Gateway",
+        "ActualMaxObservedLots": 249,
+        "RoundedMaxObservedLots": 250
+    },
+    {
+        "CarParkID": "7",
+        "Development": "Orchard Point",
+        "ActualMaxObservedLots": 173,
+        "RoundedMaxObservedLots": 180
+    },
+    {
+        "CarParkID": "55",
+        "Development": "Paragon",
+        "ActualMaxObservedLots": 413,
+        "RoundedMaxObservedLots": 420
+    },
+    {
+        "CarParkID": "9",
+        "Development": "Plaza Singapura",
+        "ActualMaxObservedLots": 626,
+        "RoundedMaxObservedLots": 630
+    },
+    {
+        "CarParkID": "3",
+        "Development": "Raffles City",
+        "ActualMaxObservedLots": 884,
+        "RoundedMaxObservedLots": 890
+    },
+    {
+        "CarParkID": "26",
+        "Development": "Resorts World",
+        "ActualMaxObservedLots": 2477,
+        "RoundedMaxObservedLots": 2480
+    },
+    {
+        "CarParkID": "17",
+        "Development": "Sentosa",
+        "ActualMaxObservedLots": 1649,
+        "RoundedMaxObservedLots": 1650
+    },
+    {
+        "CarParkID": "6",
+        "Development": "Singapore Flyer",
+        "ActualMaxObservedLots": 266,
+        "RoundedMaxObservedLots": 270
+    },
+    {
+        "CarParkID": "1",
+        "Development": "Suntec City",
+        "ActualMaxObservedLots": 3121,
+        "RoundedMaxObservedLots": 3130
+    },
+    {
+        "CarParkID": "63",
+        "Development": "Tampines Mall",
+        "ActualMaxObservedLots": 614,
+        "RoundedMaxObservedLots": 620
+    },
+    {
+        "CarParkID": "18",
+        "Development": "Tang Plaza",
+        "ActualMaxObservedLots": 388,
+        "RoundedMaxObservedLots": 390
+    },
+    {
+        "CarParkID": "57",
+        "Development": "The Atrium@Orchard",
+        "ActualMaxObservedLots": 96,
+        "RoundedMaxObservedLots": 100
+    },
+    {
+        "CarParkID": "10",
+        "Development": "The Cathay",
+        "ActualMaxObservedLots": 87,
+        "RoundedMaxObservedLots": 90
+    },
+    {
+        "CarParkID": "8",
+        "Development": "The Heeren",
+        "ActualMaxObservedLots": 152,
+        "RoundedMaxObservedLots": 160
+    },
+    {
+        "CarParkID": "50",
+        "Development": "VivoCity P2",
+        "ActualMaxObservedLots": 758,
+        "RoundedMaxObservedLots": 760
+    },
+    {
+        "CarParkID": "16",
+        "Development": "VivoCity P3",
+        "ActualMaxObservedLots": 1134,
+        "RoundedMaxObservedLots": 1140
+    },
+    {
+        "CarParkID": "43",
+        "Development": "Westgate",
+        "ActualMaxObservedLots": 564,
+        "RoundedMaxObservedLots": 570
+    },
+    {
+        "CarParkID": "15",
+        "Development": "Wheelock Place",
+        "ActualMaxObservedLots": 256,
+        "RoundedMaxObservedLots": 260
+    },
+    {
+        "CarParkID": "14",
+        "Development": "Wisma Atria",
+        "ActualMaxObservedLots": 289,
+        "RoundedMaxObservedLots": 290
+    }
+]
