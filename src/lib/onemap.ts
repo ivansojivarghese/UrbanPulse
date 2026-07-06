@@ -18,6 +18,8 @@ async function refreshToken(): Promise<string> {
         }
     );
 
+    // console.log(response)
+
     const token = response.data.access_token;
 
     if (!token) {
@@ -47,6 +49,8 @@ export async function getNearestMRT(
 ) {
 
     let token = await getValidToken();
+
+    // console.log(token)
 
     const makeRequest = async (accessToken: string) => {
 

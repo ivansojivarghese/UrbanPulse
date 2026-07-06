@@ -28,6 +28,10 @@ async function refreshToken(): Promise<string> {
     const token =
         response.data?.Result;
 
+    //console.log(response.status);
+    //console.log(response.headers);
+    //console.log(response.data);
+
     if (!token) {
         throw new Error(
             "Unable to obtain URA token."
