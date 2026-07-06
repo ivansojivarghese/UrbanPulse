@@ -1,11 +1,25 @@
 import axios from "axios";
 
+import capacityData from "@/lib/lta_max_capacities_combined.json";
+
 const BASE_URL = "https://datamall2.mytransport.sg/ltaodataservice";
 
 const ACCOUNT_KEY = process.env.LTA_DATA_MALL_ACCOUNT_KEY;
 
 if (!ACCOUNT_KEY) {
     throw new Error("Missing LTA_DATA_MALL_ACCOUNT_KEY");
+}
+
+export interface LTACapacity {
+
+    CarParkID: string;
+
+    Development: string;
+
+    ActualMaxObservedLots: number;
+
+    RoundedMaxObservedLots: number;
+
 }
 
 const client = axios.create({
@@ -76,6 +90,20 @@ export async function getLTACarparkAvailability(): Promise<LTACarpark[]> {
     }>("/CarParkAvailabilityv2");
 
     return data.value;
+
+}
+
+export function getLTACapacityMap() {
+
+    const map = new Map<string, LTACapacity>();
+
+    for (const cp of capacityData as LTACapacity[]) {
+
+        map.set(cp.CarParkID, cp);
+
+    }
+
+    return map;
 
 }
 

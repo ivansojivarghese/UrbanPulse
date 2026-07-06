@@ -10,6 +10,7 @@ import {
 } from "@/lib/dataGov";
 
 import {
+    getLTACapacityMap,
     getLTACarparkMap
 } from "@/lib/lta";
 
@@ -153,6 +154,8 @@ export async function GET(req: NextRequest) {
                 getMergedHDBCarparks()
 
             ]);
+
+            const ltaCapacityMap = getLTACapacityMap(); 
     
             /*
             const uraMap = new Map<string, any>();
@@ -502,7 +505,9 @@ export async function GET(req: NextRequest) {
 
         const records = ltaMap.get(cp.carpark_id) ?? [];
 
-        console.log(records)
+        const ltaCapacity = ltaCapacityMap.get(cp.carpark_id);
+
+        // console.log(records)
 
         const dg = dataGovMap.get(cp.carpark_id);
         // const ura = uraMap.get(cp.carpark_id);
@@ -566,6 +571,8 @@ export async function GET(req: NextRequest) {
                 ltaLots.C +
                 ltaLots.Y +
                 ltaLots.H;
+
+            totalLots = ltaCapacity?.RoundedMaxObservedLots ?? ltaCapacity?.ActualMaxObservedLots ?? null;
 
             source = "LTA";
         }
