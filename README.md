@@ -40,7 +40,9 @@ Required environment variables:
 
 ``` GET /api/mrt/nearby ```
 
-```GET /api/carparks/nearby ```
+``` GET /api/carparks/nearby ```
+
+``` GET /api/taxis/nearby ```
 
 ### Nearby bus stops
 
@@ -212,4 +214,61 @@ Response:
       },
       "agency": "URA"
     },
+```
+
+### Nearby taxis (for hire)
+
+```http://localhost:3000/api/taxis/nearby?lat=1.2826495473755732&lng=103.83903721454651&radius=2000```
+
+Response:
+
+```
+{
+  "count": 8,
+  "radius": 2000,
+  "areaSqKm": 12.5663706143592,
+  "density": 0.636619772367581,
+  "results": [
+    {
+      "latitude": 1.38413106666667,
+      "longitude": 103.743279716667,
+      "distance": 545.41180646595
+    },
+    {
+      "latitude": 1.3961449,
+      "longitude": 103.744042866667,
+      "distance": 794.179432253852
+    },
+    {
+      "latitude": 1.39548895,
+      "longitude": 103.74795455,
+      "distance": 880.832425546025
+    },
+    {
+      "latitude": 1.3965804,
+      "longitude": 103.747377933333,
+      "distance": 950.474548076638
+    },
+    {
+      "latitude": 1.38018531666667,
+      "longitude": 103.740581083333,
+      "distance": 1031.41466541328
+    },
+    {
+      "latitude": 1.38017981666667,
+      "longitude": 103.740575416667,
+      "distance": 1032.18688530779
+    },
+    {
+      "latitude": 1.39841428333333,
+      "longitude": 103.747894383333,
+      "distance": 1158.33092316938
+    },
+    {
+      "latitude": 1.38458063333333,
+      "longitude": 103.758354816667,
+      "distance": 1738.9633244051
+    }
+  ]
+}
 ```
