@@ -44,6 +44,8 @@ Required environment variables:
 
 ``` GET /api/taxis/nearby ```
 
+``` GET /api/traffic/nearby ```
+
 ### Nearby bus stops
 
 ``` http://localhost:3000/api/bus-stops/nearby?lat=1.3521&lng=103.8198&radius=500 ```
@@ -271,4 +273,86 @@ Response:
     }
   ]
 }
+```
+
+### Nearby traffic
+
+```http://localhost:3000/api/traffic/nearby?lat=1.2897552003625212&lng=103.85719952065011&radius=1000```
+
+Response:
+
+```
+{
+  "count": 138,
+  "radius": 2000,
+  "lastUpdatedTime": "2026-07-07 13:30:00",
+  "results": [
+    {
+      "linkId": "120",
+      "roadName": "RIVER VALLEY ROAD",
+      "roadCategory": "2",
+      "speedBand": 4,
+      "minimumSpeed": 30,
+      "maximumSpeed": 39,
+      "start": {
+        "latitude": 1.294262,
+        "longitude": 103.842124
+      },
+      "end": {
+        "latitude": 1.294197,
+        "longitude": 103.842174
+      },
+      "distance": 1741.82896739184
+    },
+    {
+      "linkId": "121",
+      "roadName": "RIVER VALLEY ROAD",
+      "roadCategory": "2",
+      "speedBand": 4,
+      "minimumSpeed": 30,
+      "maximumSpeed": 39,
+      "start": {
+        "latitude": 1.29429,
+        "longitude": 103.842103
+      },
+      "end": {
+        "latitude": 1.294262,
+        "longitude": 103.842124
+      },
+      "distance": 1749.21678609764
+    },
+    {
+      "linkId": "65",
+      "roadName": "RIVER VALLEY ROAD",
+      "roadCategory": "2",
+      "speedBand": 5,
+      "minimumSpeed": 40,
+      "maximumSpeed": 49,
+      "start": {
+        "latitude": 1.294189,
+        "longitude": 103.84208
+      },
+      "end": {
+        "latitude": 1.294478,
+        "longitude": 103.841886
+      },
+      "distance": 1751.60165451041
+    },
+    {
+      "linkId": "122",
+      "roadName": "RIVER VALLEY ROAD",
+      "roadCategory": "2",
+      "speedBand": 4,
+      "minimumSpeed": 30,
+      "maximumSpeed": 39,
+      "start": {
+        "latitude": 1.294454,
+        "longitude": 103.841977
+      },
+      "end": {
+        "latitude": 1.29429,
+        "longitude": 103.842103
+      },
+      "distance": 1752.34692512342
+    },
 ```
