@@ -22,3 +22,73 @@ export function haversineDistance(
         Math.sqrt(1 - a)
     );
 }
+
+export function pointToSegmentDistance(
+    lat: number,
+    lng: number,
+    startLat: number,
+    startLng: number,
+    endLat: number,
+    endLng: number
+): number {
+
+    // Approximate Earth locally as a plane
+    const metersPerDegLat = 111320;
+
+    const metersPerDegLng =
+        111320 * Math.cos(
+            ((startLat + endLat) / 2) * Math.PI / 180
+        );
+
+    const px = lng * metersPerDegLng;
+    const py = lat * metersPerDegLat;
+
+    const ax = startLng * metersPerDegLng;
+    const ay = startLat * metersPerDegLat;
+
+    const bx = endLng * metersPerDegLng;
+    const by = endLat * metersPerDegLat;
+
+    const abx = bx - ax;
+    const aby = by - ay;
+
+    const apx = px - ax;
+    const apy = py - ay;
+
+    const abLengthSq =
+        abx * abx + aby * aby;
+
+    if (abLengthSq === 0) {
+
+        return Math.sqrt(
+            apx * apx + apy * apy
+        );
+
+    }
+
+    let t =
+        (apx * abx + apy * aby) /
+        abLengthSq;
+
+    t = Math.max(
+        0,
+        Math.min(1, t)
+    );
+
+    const closestX =
+        ax + t * abx;
+
+    const closestY =
+        ay + t * aby;
+
+    return Math.sqrt(
+
+        (px - closestX) *
+        (px - closestX) +
+
+        (py - closestY) *
+        (py - closestY)
+
+    );
+
+}
