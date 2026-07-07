@@ -1,4 +1,4 @@
-/*
+
 import { NextRequest, NextResponse } from "next/server";
 
 import {
@@ -56,4 +56,4 @@ export async function GET(req: NextRequest) {
     });
 
 }
-    */
+    

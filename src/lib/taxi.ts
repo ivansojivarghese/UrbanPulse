@@ -1,4 +1,4 @@
-/*
+
 import axios from "axios";
 
 const BASE_URL = "https://datamall2.mytransport.sg/ltaodataservice";
@@ -76,4 +76,4 @@ export function getNearbyTaxis(
         .sort((a, b) => a.distance - b.distance);
 
 }
-        */
+        

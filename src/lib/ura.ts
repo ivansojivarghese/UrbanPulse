@@ -47,6 +47,8 @@ async function getValidToken() {
 
     let token = getToken();
 
+    // console.log("1")
+
     if (!token) {
         token = await refreshToken();
     }
@@ -58,6 +60,8 @@ async function uraRequest(service: string) {
 
     let token =
         await getValidToken();
+
+        // console.log(token)
 
     try {
 
@@ -88,7 +92,11 @@ async function uraRequest(service: string) {
             err.response?.status === 403
         ) {
 
+            // console.log(token)
+
             clearToken();
+
+            // console.log("2")
 
             token =
                 await refreshToken();
@@ -119,6 +127,8 @@ async function uraRequest(service: string) {
  */
 export async function getAvailability() {
 
+    // return null
+
     return uraRequest(
         "Car_Park_Availability"
     );
@@ -128,6 +138,8 @@ export async function getAvailability() {
  * Static metadata
  */
 export async function getDetails() {
+
+    // return null
 
     return uraRequest(
         "Car_Park_Details"

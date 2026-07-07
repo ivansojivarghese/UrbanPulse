@@ -135,7 +135,7 @@ export async function GET(req: NextRequest) {
 
                 dataGovMap,
 
-                uraCarparks,
+                // uraCarparks,
 
                 uraCapacityMap,
 
@@ -147,7 +147,7 @@ export async function GET(req: NextRequest) {
 
                 getDataGovCarparkMap(),
 
-                getMergedCarparks(),
+                // getMergedCarparks(),
 
                 getURACapacityMap(),
 
@@ -165,7 +165,7 @@ export async function GET(req: NextRequest) {
             }*/
 
             const uraMap = new Map<string, any[]>();
-
+            /*
             for (const cp of uraCarparks) {
 
                 const existing =
@@ -178,7 +178,7 @@ export async function GET(req: NextRequest) {
                     existing
                 );
 
-            }
+            }*/
 /*
             const nearbyHDB = hdbCarparks
             .map(cp => {

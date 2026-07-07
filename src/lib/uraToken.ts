@@ -2,6 +2,8 @@ let token: string | null = null;
 let expiresAt = 0;
 
 export function getToken() {
+    // console.log(token)
+
     if (Date.now() < expiresAt) {
         return token;
     }
