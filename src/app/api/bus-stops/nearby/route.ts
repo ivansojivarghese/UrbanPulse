@@ -21,6 +21,8 @@ export async function GET(req: NextRequest) {
     );
   }
 
+  // console.log(pool)
+
   const result = await pool.query(
     `
     SELECT
@@ -53,6 +55,8 @@ export async function GET(req: NextRequest) {
     `,
     [lat, lng, radius]
   );
+
+  // console.log(result)
 
   return NextResponse.json(result.rows);
 }

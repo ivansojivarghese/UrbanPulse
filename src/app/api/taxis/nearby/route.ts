@@ -22,6 +22,8 @@ export async function GET(req: NextRequest) {
     const taxis =
         await getTaxiAvailability();
 
+    // console.log(taxis)
+
     const nearby =
         getNearbyTaxis(
 

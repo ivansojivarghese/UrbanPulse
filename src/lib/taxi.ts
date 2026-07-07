@@ -3,7 +3,7 @@ import axios from "axios";
 
 const BASE_URL = "https://datamall2.mytransport.sg/ltaodataservice";
 
-const ACCOUNT_KEY = process.env.LTA_ACCOUNT_KEY!;
+const ACCOUNT_KEY = process.env.LTA_DATA_MALL_ACCOUNT_KEY!;
 
 const client = axios.create({
     baseURL: BASE_URL,
@@ -32,6 +32,8 @@ export async function getTaxiAvailability(): Promise<Taxi[]> {
     const response = await client.get<TaxiResponse>(
         "/Taxi-Availability"
     );
+
+    // console.log(response)
 
     return response.data.value;
 
