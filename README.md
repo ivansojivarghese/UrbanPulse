@@ -38,6 +38,8 @@ Required environment variables:
 
 ``` GET /api/bus-stops/nearby ```
 
+``` GET /api/bus-arrival/ ```
+
 ``` GET /api/mrt/nearby ```
 
 ``` GET /api/carparks/nearby ```
@@ -68,6 +70,47 @@ Response:
   }
 ]
 
+```
+
+### Bus arrivals
+
+``` http://localhost:3000/api/bus-arrival?busStopCode=83139 ```
+
+Response:
+
+```
+{
+  "busStopCode": "83139",
+  "services": [
+    {
+      "serviceNo": "15",
+      "operator": "GAS",
+      "nextBus": {
+        "OriginCode": "77009",
+        "DestinationCode": "77009",
+        "EstimatedArrival": "2026-07-08T14:20:41+08:00",
+        "Monitored": 1,
+        "Latitude": "1.3148928333333334",
+        "Longitude": "103.90911633333333",
+        "VisitNumber": "1",
+        "Load": "SDA",
+        "Feature": "WAB",
+        "Type": "SD",
+        "minutes": 0
+      },
+      "nextBus2": {
+        "OriginCode": "77009",
+        "DestinationCode": "77009",
+        "EstimatedArrival": "2026-07-08T14:33:01+08:00",
+        "Monitored": 1,
+        "Latitude": "1.334704",
+        "Longitude": "103.90748033333334",
+        "VisitNumber": "1",
+        "Load": "SEA",
+        "Feature": "WAB",
+        "Type": "SD",
+        "minutes": 13
+      },
 ```
 
 ### Nearby MRT stations
