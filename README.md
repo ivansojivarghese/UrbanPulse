@@ -1,6 +1,6 @@
 # UrbanPulse
 
-UrbanPulse is a Next.js starter for a Singapore pedestrian traffic analyser.
+UrbanPulse is a Next.js starter for a Singapore-based pedestrian traffic analyser.
 
 ## What this starter includes
 
