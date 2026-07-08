@@ -26,8 +26,8 @@ export default function OneMapMap() {
       const map = leaflet.map(mapRef.current, {
         center: leaflet.latLng(1.2868108, 103.8545349),
         zoom: 16,
-        zoomControl: true,
-        attributionControl: true
+        zoomControl: false,
+        attributionControl: false
       });
 
       map.setMaxBounds(bounds);
