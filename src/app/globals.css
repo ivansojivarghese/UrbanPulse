@@ -89,3 +89,81 @@ a {
   color: var(--text);
   border-color: rgba(255, 255, 255, 0.08);
 }
+
+.urbanpulse-popup .leaflet-popup-content-wrapper {
+    border-radius: 18px;
+    padding: 8px;
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(0,0,0,.18);
+}
+
+.urbanpulse-popup .leaflet-popup-content {
+    margin: 12px;
+    text-align: center;
+}
+
+.urbanpulse-popup .leaflet-popup-tip {
+    background: white;
+}
+
+.pulse-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #666;
+}
+
+.pulse-score {
+    color: #303030;
+    font-size: 3rem;
+    font-weight: 700;
+    font-family: var(--font-poppins);
+    margin: 0.4rem 0;
+}
+
+.pulse-label {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.leaflet-popup-content-wrapper {
+  text-align: center !important;
+  box-shadow: 0 0.15rem 0.7rem #0006 !important;
+}
+
+.leaflet-popup {
+  margin-bottom: 1rem !important;
+}
+
+.leaflet-popup-content {
+    width: 5rem !important;
+    margin: .65rem 1.2rem !important;
+    line-height: normal !important;
+    margin-top: 1.2rem !important;
+}
+
+.leaflet-popup-tip-container {
+    pointer-events: none;
+    width: 2rem !important;
+    height: 1rem !important;
+    margin-top: -0.05rem !important;
+    margin-left: -1rem !important;
+    position: absolute;
+    left: 50%;
+    overflow: hidden;
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+    text-align: center;
+    color: #757575;
+    background: none;
+    border: none;
+    text-decoration: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1.2rem !important;
+    height: 1.2rem !important;
+    font: .8rem / 1.2rem Tahoma, Verdana, sans-serif !important;
+    font-size: 1.5rem !important;
+    margin: 0.2rem 0.2rem 0 0;
+}

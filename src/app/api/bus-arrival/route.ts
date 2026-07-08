@@ -1,84 +1,21 @@
-import {
+import { NextRequest, NextResponse } from 'next/server';
+import { getBusArrival } from '@/lib/busArrival';
 
-    NextRequest,
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const busStopCode = searchParams.get('busStopCode');
 
-    NextResponse
+  if (!busStopCode) {
+    return NextResponse.json({ error: 'Missing busStopCode' }, { status: 400 });
+  }
 
-} from "next/server";
+  try {
+    const busArrival = await getBusArrival(busStopCode);
 
-import {
+    return NextResponse.json(busArrival);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Failed to load bus arrival';
 
-    getBusArrival
-
-} from "@/lib/busArrival";
-
-export async function GET(
-
-    req: NextRequest
-
-) {
-
-    const { searchParams } =
-        new URL(req.url);
-
-    const busStopCode =
-        searchParams.get(
-            "busStopCode"
-        );
-
-    if (!busStopCode) {
-
-        return NextResponse.json(
-
-            {
-
-                error:
-                    "busStopCode is required"
-
-            },
-
-            {
-
-                status: 400
-
-            }
-
-        );
-
-    }
-
-    try {
-
-        const arrival =
-            await getBusArrival(
-                busStopCode
-            );
-
-        return NextResponse.json(
-            arrival
-        );
-
-    }
-
-    catch (err: any) {
-
-        return NextResponse.json(
-
-            {
-
-                error:
-                    err.message
-
-            },
-
-            {
-
-                status: 500
-
-            }
-
-        );
-
-    }
-
+    return NextResponse.json({ error: message }, { status: 502 });
+  }
 }
