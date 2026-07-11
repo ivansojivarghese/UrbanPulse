@@ -89,7 +89,7 @@ export default function OneMapMap() {
                 ),
 
                 fetch(
-                    `/api/mrt/nearby?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}&radius=1000`
+                    `/api/mrt/nearby?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}&radius=500`
                 )
 
             ]);
@@ -112,7 +112,7 @@ export default function OneMapMap() {
         // Fetch arrivals + MRT crowd in parallel
         //
 
-        const [busArrivals, mrtCrowdRaw] =
+        const [busArrivals, mrtCrowdRaw, mrtForecastRaw] =
             await Promise.all([
 
                 Promise.all(
@@ -185,7 +185,47 @@ export default function OneMapMap() {
 
         })
 
-)
+),
+
+
+                Promise.all(
+
+    nearbyStations.map(async (station: any) => {
+
+        const stationIds = station.id
+            .split("/")
+            .map((id: string) => id.trim());
+
+        const forecasts = (
+            await Promise.all(
+
+                stationIds.map(async (id: string) => {
+
+                    const response = await fetch(
+                        `/api/mrt-forecast?stationId=${encodeURIComponent(id)}`
+                    );
+
+                    if (!response.ok)
+                        return null;
+
+                    return {
+                        station: {
+                            ...station,
+                            id
+                        },
+                        forecast: await response.json()
+                    };
+
+                })
+
+            )
+        ).filter(Boolean);
+
+        return forecasts;
+
+    })
+
+).then(results => results.flat())
 
                 /*
                 Promise.all(
@@ -231,6 +271,11 @@ export default function OneMapMap() {
         item !== null
 );
 
+const mrtForecast = mrtForecastRaw.filter(
+    (item): item is { station: any; forecast: any } =>
+        item !== null
+);
+
         // console.log(mrtCrowd);
 
         //if (!mrtCrowd.length) {
@@ -252,7 +297,8 @@ export default function OneMapMap() {
         const mrtPulse =
             calculateMRTPulse(
                nearbyStations,
-             mrtCrowd
+             mrtCrowd,
+                 mrtForecast
         );
 
         //

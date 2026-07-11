@@ -61,6 +61,32 @@ export function getTrainLine(stationId: string): string {
     return `${id.substring(0, 2)}L`;
 }
 
+export interface ForecastInterval {
+    Start: string;
+    CrowdLevel: string;
+}
+
+export interface ForecastStation {
+    Station: string;
+    Interval: ForecastInterval[];
+}
+
+export interface ForecastDay {
+    Date: string;
+    Stations: ForecastStation[];
+}
+
+interface ForecastResponse {
+    value: ForecastDay[];
+}
+
+export interface ForecastRecord {
+    Date: string;
+    Station: string;
+    Start: string;
+    CrowdLevel: string;
+}
+
 export async function getCrowdForStation(
     stationId: string
 ): Promise<CrowdRecord | null> {
@@ -86,6 +112,37 @@ export async function getCrowdForStation(
     );
 }
 
+export async function getForecastForStation(
+    stationId: string
+): Promise<ForecastInterval[]> {
+
+    const id = stationId.toUpperCase();
+
+    const trainLine = getTrainLine(id);
+
+    const response = await client.get<ForecastResponse>(
+        "/PCDForecast",
+        {
+            params: {
+                TrainLine: trainLine
+            }
+        }
+    );
+
+    const day = response.data.value[0];
+
+    if (!day)
+        return [];
+
+    const station = day.Stations.find(
+        s => s.Station.toUpperCase() === id
+    );
+
+    return station?.Interval ?? [];
+
+    //return station ? station.Interval.map(interval => ({ ...interval, Station: station.Station })) : [];
+}
+
 interface NearbyStation {
     id: string;
     name: string;
@@ -99,6 +156,11 @@ interface CrowdResult {
     crowd: {
         CrowdLevel: string;
     } | null;
+}
+
+interface ForecastResult {
+    station: NearbyStation;
+    forecast: ForecastRecord[];
 }
 
 /*
@@ -307,7 +369,8 @@ export function calculateMRTPulse(
 
 export function calculateMRTPulse(
     nearbyStations: NearbyStation[],
-    mrtCrowd: CrowdResult[]
+    mrtCrowd: CrowdResult[],
+    mrtForecast: ForecastResult[]
 ): number {
 
     //--------------------------------------------------
@@ -393,7 +456,7 @@ score += Math.min(uniqueStations.size * 18, 54);
         // 0–20 points based on proximity
         score += Math.max(
             0,
-            25 - closestDistance / 20
+            25 * (1 - closestDistance / 1000)
         );
 
         //--------------------------------------------------
@@ -496,6 +559,58 @@ for (const item of mrtCrowd) {
 }
 
 for (const value of crowdByStation.values()) {
+    score += value;
+}
+
+
+//--------------------------------------------------
+// Forecast contribution (low weight)
+//--------------------------------------------------
+
+const forecastByStation = new Map<string, number>();
+
+for (const item of mrtForecast) {
+
+    if (!item.forecast.length)
+        continue;
+
+    const key = item.station.name.trim().toUpperCase();
+
+    let forecastScore = 0;
+
+    for (const record of item.forecast) {
+
+        switch (record.CrowdLevel.toLowerCase()) {
+
+            case "l":
+                forecastScore += 0.25;
+                break;
+
+            case "m":
+                forecastScore += 0.75;
+                break;
+
+            case "h":
+                forecastScore += 1.5;
+                break;
+
+        }
+
+    }
+
+    forecastScore /= item.forecast.length;
+
+    forecastByStation.set(
+        key,
+        Math.max(
+            forecastByStation.get(key) ?? 0,
+            forecastScore
+        )
+    );
+
+}
+
+for (const value of forecastByStation.values()) {
     score += value;
 }
 
