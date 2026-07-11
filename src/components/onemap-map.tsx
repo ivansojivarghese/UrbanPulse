@@ -4,6 +4,9 @@ import { useEffect, useRef } from 'react';
 import 'leaflet/dist/leaflet.css';
 
 import { calculateBusPulse } from '@/lib/pulse/bus';
+import { calculateMRTPulse } from '@/lib/pulse/mrt';
+
+import { calculateAggregatePulse } from '@/lib/pulse/aggregate';
 
 export default function OneMapMap() {
   const mapRef = useRef<HTMLDivElement | null>(null);
@@ -47,11 +50,273 @@ export default function OneMapMap() {
 
       const pulseIcon = leaflet.icon({
           iconUrl: "/icons/marker.svg",
-          iconSize: [40, 40],
-          iconAnchor: [20, 40],
-          popupAnchor: [0, -40]
+          iconSize: [20, 20],
+          iconAnchor: [10, 20],
+          popupAnchor: [0, -20]
       });
 
+      const handleMapClick = async (
+    event: import("leaflet").LeafletMouseEvent
+) => {
+
+    const { lat, lng } = event.latlng;
+
+    clickMarker?.remove();
+
+    clickMarker = leaflet
+        .marker([lat, lng], {
+            icon: pulseIcon
+        })
+        .addTo(map)
+        .bindPopup(`
+            <div class="pulse-popup">
+                <div class="pulse-score">0</div>
+            </div>
+        `)
+        .openPopup();
+
+    try {
+
+        //
+        // Fetch nearby bus stops + MRT stations simultaneously
+        //
+
+        const [nearbyStopsResponse, nearbyStationsResponse] =
+            await Promise.all([
+
+                fetch(
+                    `/api/bus-stops/nearby?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}&radius=250`
+                ),
+
+                fetch(
+                    `/api/mrt/nearby?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}&radius=1000`
+                )
+
+            ]);
+
+        if (!nearbyStopsResponse.ok) {
+            throw new Error("Failed to fetch nearby bus stops");
+        }
+
+        if (!nearbyStationsResponse.ok) {
+            throw new Error("Failed to fetch nearby MRT stations");
+        }
+
+        const nearbyStops = await nearbyStopsResponse.json();
+
+        const nearbyStations = await nearbyStationsResponse.json();
+
+        // console.log(nearbyStations);
+
+        //
+        // Fetch arrivals + MRT crowd in parallel
+        //
+
+        const [busArrivals, mrtCrowdRaw] =
+            await Promise.all([
+
+                Promise.all(
+
+                    nearbyStops.map(async (stop: any) => {
+
+                        const response = await fetch(
+                            `/api/bus-arrival?busStopCode=${encodeURIComponent(
+                                stop.bus_stop_code
+                            )}`
+                        );
+
+                        if (!response.ok) {
+                            throw new Error(
+                                `Failed bus arrival ${stop.bus_stop_code}`
+                            );
+                        }
+
+                        return response.json();
+
+                    })
+
+                ),
+
+                Promise.all(
+
+    nearbyStations
+        .flatMap((station: any) => {
+
+            const ids = station.id
+                .split("/")
+                .map((id: string) => id.trim());
+
+            return ids.map((id: string) => ({
+
+                ...station,
+
+                id
+
+            }));
+
+        })
+
+        .map(async (station: any) => {
+
+            const response = await fetch(
+                `/api/mrt-crowd?stationId=${encodeURIComponent(
+                    station.id
+                )}`
+            );
+
+            // Ignore stations with no crowd data
+            if (!response.ok) {
+                return null;
+            }
+
+            const crowd = await response.json();
+
+            if (!crowd) {
+                return null;
+            }
+
+            return {
+
+                station,
+
+                crowd
+
+            };
+
+        })
+
+)
+
+                /*
+                Promise.all(
+
+                    nearbyStations.map(async (station: any) => {
+
+                        const response = await fetch(
+                            `/api/mrt-crowd?stationId=${encodeURIComponent(
+                                station.id
+                            )}`
+                        );
+
+                        // console.log(`MRT crowd for ${station.id}:`, response);
+                       
+
+                            // Ignore stations with no crowd data
+                            if (!response.ok) {
+                                // console.warn(`No MRT crowd data for ${station.id}`);
+                                return null;
+                            }
+
+                        return {
+
+                            station,
+
+                            crowd: await response.json()
+
+                        };
+
+                    })
+
+                )
+                */
+            ]);
+
+            /*
+        const mrtCrowd = mrtCrowdRaw.filter(
+            (item): item is { station: any; crowd: any } => item !== null
+        );*/
+
+        const mrtCrowd = mrtCrowdRaw.filter(
+    (item): item is { station: any; crowd: any } =>
+        item !== null
+);
+
+        // console.log(mrtCrowd);
+
+        //if (!mrtCrowd.length) {
+          
+        //}
+
+        //
+        // Calculate pulses
+        //
+
+        const busPulse =
+            calculateBusPulse(
+                nearbyStops,
+                busArrivals
+            );
+
+      
+
+        const mrtPulse =
+            calculateMRTPulse(
+               nearbyStations,
+             mrtCrowd
+        );
+
+        //
+        // Debug payload
+        //
+
+        //console.log("Nearby stations:", nearbyStations);
+        //console.log("MRT crowd:", mrtCrowd);
+        //console.log("MRT crowd length:", mrtCrowd.length);
+
+        const aggPulse = calculateAggregatePulse(busPulse, mrtPulse);
+
+        console.log({
+
+            clickedPoint: {
+
+                lat,
+                lng
+
+            },
+
+            radius: 500,
+
+            busPulse,
+
+            nearbyStops,
+
+            busArrivals,
+
+            nearbyStations,
+
+            mrtPulse
+
+        });
+
+        //
+        // Update popup
+        //
+
+        clickMarker?.setPopupContent(`
+            <div class="pulse-popup">
+                <div class="pulse-score">
+                    ${aggPulse}
+                </div>
+            </div>
+        `);
+
+        clickMarker?.openPopup();
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        clickMarker?.setPopupContent(`
+            <div class="pulse-popup">
+                Failed to load pulse
+            </div>
+        `);
+
+    }
+
+};
+/*
       const handleMapClick = async (event: import('leaflet').LeafletMouseEvent) => {
         const { lat, lng } = event.latlng;
 
@@ -61,111 +326,160 @@ export default function OneMapMap() {
             icon: pulseIcon,
           })
           .addTo(map)
-          // .bindPopup(`Clicked location<br />${lat.toFixed(6)}, ${lng.toFixed(6)}`)
-          /*
-          .bindPopup(`
-            <div style="text-align:center;">
-                <div style="font-size:14px;font-weight:bold;">
-                    🚌 Bus Pulse
-                </div>
-
-                <div style="
-                    font-size:42px;
-                    font-weight:bold;
-                    margin:8px 0;
-                ">
-                    ${data.pulse}
-                </div>
-
-                <div>
-                    ${getPulseLabel(data.pulse)}
-                </div>
-            </div>
-        `)*/
         
           .bindPopup(`
             <div class="pulse-popup">
               <div class="pulse-score">0</div>
           </div>
         `)
-        /*
-          .bindPopup(
-          `
-          <div class="pulse-popup">
-              <div class="pulse-title">🚌 Bus Pulse</div>
-              <div class="pulse-score">${pulse}</div>
-              <div class="pulse-label">${getPulseLabel(pulse)}</div>
-          </div>
-          `,
-          {
-            className: "urbanpulse-popup"
-          })*/
+        
           .openPopup();
 
         try {
-          const nearbyStopsResponse = await fetch(
-            `/api/bus-stops/nearby?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}&radius=500`
-          );
+          
 
-          if (!nearbyStopsResponse.ok) {
-            throw new Error(`Nearby stops request failed with status ${nearbyStopsResponse.status}`);
-          }
+        // ==========================
+// BUS
+// ==========================
 
-          const nearbyStops = (await nearbyStopsResponse.json()) as {
-            bus_stop_code: string;
-            road_name: string;
-            description: string;
-            latitude: number;
-            longitude: number;
-            distance: number;
-          }[];
+const nearbyStopsResponse = await fetch(
+    `/api/bus-stops/nearby?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}&radius=500`
+);
 
-          const busArrivals = await Promise.all(
-            nearbyStops.map(async (stop) => {
-              const arrivalResponse = await fetch(
-                `/api/bus-arrival?busStopCode=${encodeURIComponent(stop.bus_stop_code)}`
-              );
+if (!nearbyStopsResponse.ok) {
+    throw new Error(
+        `Nearby stops request failed (${nearbyStopsResponse.status})`
+    );
+}
 
-              if (!arrivalResponse.ok) {
-                throw new Error(
-                  `Bus arrival request failed for ${stop.bus_stop_code} with status ${arrivalResponse.status}`
-                );
-              }
+const nearbyStops = await nearbyStopsResponse.json();
 
-              return arrivalResponse.json();
-            })
-          );
+const busArrivals = await Promise.all(
 
-          const pulse = calculateBusPulse(
-              nearbyStops,
-              busArrivals
-          );
+    nearbyStops.map(async (stop: any) => {
 
-          const payload = {
-            clickedPoint: {
-              lat,
-              lng
-            },
-            pulse,
-            radius: 250,
-            nearbyStops,
-            busArrivals
-          };
+        const response = await fetch(
 
-          console.log(JSON.stringify(payload, null, 2));
+            `/api/bus-arrival?busStopCode=${encodeURIComponent(
+                stop.bus_stop_code
+            )}`
 
-          clickMarker.setPopupContent(`
-            <div class="pulse-popup">
-              <div class="pulse-score">${pulse}</div>
-          </div>
-        `);
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                `Bus arrival failed for ${stop.bus_stop_code}`
+            );
+        }
+
+        return response.json();
+
+    })
+
+);
+
+const busPulse = calculateBusPulse(
+    nearbyStops,
+    busArrivals
+);
+
+// ==========================
+// MRT
+// ==========================
+
+const nearbyStationsResponse = await fetch(
+
+    `/api/mrt/nearby?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}&radius=500`
+
+);
+
+if (!nearbyStationsResponse.ok) {
+    throw new Error(
+        `Nearby MRT request failed (${nearbyStationsResponse.status})`
+    );
+}
+
+const nearbyStations = await nearbyStationsResponse.json();
+
+const mrtCrowd = await Promise.all(
+
+    nearbyStations.map(async (station: any) => {
+
+        const response = await fetch(
+
+            `/api/mrt-crowd?stationId=${encodeURIComponent(
+                station.id
+            )}`
+
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                `Crowd lookup failed for ${station.id}`
+            );
+        }
+
+        return {
+
+            station,
+
+            crowd: await response.json()
+
+        };
+
+    })
+
+);
+
+// ==========================
+// PAYLOAD
+// ==========================
+
+const payload = {
+
+    clickedPoint: {
+
+        lat,
+
+        lng
+
+    },
+
+    radius: 500,
+
+    busPulse,
+
+    nearbyStops,
+
+    busArrivals,
+
+    nearbyStations,
+
+    mrtCrowd
+
+};
+
+console.log(JSON.stringify(payload, null, 2));
+
+// For now display the bus pulse.
+// Later replace this with Urban Pulse.
+
+clickMarker?.setPopupContent(`
+    <div class="pulse-popup">
+        <div class="pulse-score">
+            ${busPulse}
+        </div>
+    </div>
+`);
+
+clickMarker?.openPopup();
 
         clickMarker.openPopup();
 
         } catch (error) {
           console.error(error);
         }
-      };
+      };*/
 
       map.on('click', handleMapClick);
       removeClickHandler = () => {
