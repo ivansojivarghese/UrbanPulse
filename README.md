@@ -2,13 +2,6 @@
 
 UrbanPulse is a Next.js starter for a Singapore-based pedestrian traffic analyser.
 
-## What this starter includes
-
-- A polished dashboard landing page for live mobility intelligence.
-- A TypeScript + Next.js app shell with clean aliases and metadata.
-- A visual place-holder map panel and region watchlist for Singapore coverage.
-- A project structure ready for LTA Datamall, OneMap, and map provider adapters.
-
 ## Suggested next steps
 
 1. Add API adapters for LTA Datamall, OneMap, and your selected map provider.
