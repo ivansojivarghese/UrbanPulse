@@ -11,7 +11,10 @@ export function calculateParkingPulse(
     carparks: NearbyCarpark[]
 ): number {
 
-    console.log(carparks);
+    // console.log(carparks);
+
+    if (carparks === undefined) 
+        return 0;
 
     if (!carparks.length && carparks)
         return 0;

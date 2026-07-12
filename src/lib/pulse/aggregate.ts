@@ -2,12 +2,14 @@ export function calculateAggregatePulse(
     busPulse: number,
     mrtPulse: number,
     taxiPulse: number,
-    parkingPulse: number
+    parkingPulse: number,
+    trafficPulse: number
 ): number {
     return Math.round(
-        busPulse * 0.45 +
-        mrtPulse * 0.3 + 
+        busPulse * 0.4 +
+        mrtPulse * 0.25 + 
         taxiPulse * 0.1 +
-        parkingPulse * 0.15
+        parkingPulse * 0.15 +
+        trafficPulse * 0.1
     );
 }
