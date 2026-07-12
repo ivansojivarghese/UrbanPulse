@@ -567,9 +567,14 @@ for (const value of crowdByStation.values()) {
 // Forecast contribution (low weight)
 //--------------------------------------------------
 
+// console.log(score)
+
+/*
 const forecastByStation = new Map<string, number>();
 
 for (const item of mrtForecast) {
+
+    // console.log(item)
 
     if (!item.forecast.length)
         continue;
@@ -608,6 +613,82 @@ for (const item of mrtForecast) {
         )
     );
 
+}
+
+for (const value of forecastByStation.values()) {
+    score += value;
+
+    // console.log(value)
+}
+*/
+
+
+//--------------------------------------------------
+// Forecast contribution (next 2 hours)
+//--------------------------------------------------
+
+const forecastByStation = new Map<string, number>();
+
+const now = new Date();
+
+for (const item of mrtForecast) {
+
+    if (!item.forecast.length)
+        continue;
+
+    const key = item.station.name.trim().toUpperCase();
+
+    //--------------------------------------------------
+    // Keep only the next 2 hours of forecasts
+    //--------------------------------------------------
+
+    const upcoming = item.forecast
+        .filter(record => new Date(record.Start) >= now)
+        .sort(
+            (a, b) =>
+                new Date(a.Start).getTime() -
+                new Date(b.Start).getTime()
+        )
+        .slice(0, 4); // 4 × 30-min intervals = 2 hours
+
+    if (upcoming.length === 0)
+        continue;
+
+    //--------------------------------------------------
+    // Average upcoming forecast
+    //--------------------------------------------------
+
+    let forecastScore = 0;
+
+    for (const record of upcoming) {
+
+        switch (record.CrowdLevel.toLowerCase()) {
+
+            case "l":
+                forecastScore += 2;
+                break;
+
+            case "m":
+                forecastScore += 6;
+                break;
+
+            case "h":
+                forecastScore += 12;
+                break;
+
+        }
+
+    }
+
+    forecastScore /= upcoming.length;
+
+    forecastByStation.set(
+        key,
+        Math.max(
+            forecastByStation.get(key) ?? 0,
+            forecastScore
+        )
+    );
 }
 
 for (const value of forecastByStation.values()) {

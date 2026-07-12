@@ -19,6 +19,11 @@ export async function GET(request: NextRequest) {
 
         const forecast =
             await getForecastForStation(stationId);
+/*
+            console.log(
+                `Fetched MRT forecast for ${stationId}:`,
+                forecast
+            );*/
 
         return NextResponse.json(forecast);
 
