@@ -2,13 +2,6 @@
 
 UrbanPulse is a Next.js starter for a Singapore-based pedestrian traffic analyser.
 
-## Suggested next steps
-
-1. Add API adapters for LTA Datamall, OneMap, and your selected map provider.
-2. Model geographic regions, nearby bus stops, and service coverage in a data layer.
-3. Add a live scoring job that estimates pedestrian pressure from transport and traffic signals.
-4. Replace the visual placeholder map with a real map SDK.
-
 ## Run locally
 
 ```bash
