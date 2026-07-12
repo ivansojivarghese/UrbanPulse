@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import { calculateBusPulse } from '@/lib/pulse/bus';
 import { calculateMRTPulse } from '@/lib/pulse/mrt';
 import { calculateTaxiPulse } from '@/lib/pulse/taxi';
+import { calculateParkingPulse } from '@/lib/pulse/parking';
 
 import { calculateAggregatePulse } from '@/lib/pulse/aggregate';
 
@@ -82,7 +83,7 @@ export default function OneMapMap() {
         // Fetch nearby bus stops + MRT stations simultaneously
         //
 
-        const [nearbyStopsResponse, nearbyStationsResponse, nearbyTaxiResponse] =
+        const [nearbyStopsResponse, nearbyStationsResponse, nearbyTaxiResponse, nearbyParkingResponse] =
             await Promise.all([
 
                 fetch(
@@ -95,6 +96,10 @@ export default function OneMapMap() {
 
                 fetch(
                     `/api/taxis/nearby?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}&radius=2000`
+                ),
+
+                fetch(
+                    `/api/carparks/nearby?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}&radius=500`
                 )
 
             ]);
@@ -113,7 +118,9 @@ export default function OneMapMap() {
 
         const nearbyTaxis = await nearbyTaxiResponse.json();
 
-        // console.log(nearbyStations);
+        const nearbyParking = await nearbyParkingResponse.json();
+
+        // console.log(nearbyParking);
 
         //
         // Fetch arrivals + MRT crowd in parallel
@@ -282,6 +289,8 @@ export default function OneMapMap() {
             (item): item is { station: any; crowd: any } => item !== null
         );*/
 
+        const parking = nearbyParking;
+
         const taxis = nearbyTaxis;
 
         const mrtCrowd = mrtCrowdRaw.filter(
@@ -325,6 +334,12 @@ const mrtForecast = mrtForecastRaw.filter(
                 taxis
             );
 
+
+        const parkingPulse =
+            calculateParkingPulse(
+                parking.results
+            );
+
         //
         // Debug payload
         //
@@ -333,7 +348,7 @@ const mrtForecast = mrtForecastRaw.filter(
         //console.log("MRT crowd:", mrtCrowd);
         //console.log("MRT crowd length:", mrtCrowd.length);
 
-        const aggPulse = calculateAggregatePulse(busPulse, mrtPulse, taxiPulse);
+        const aggPulse = calculateAggregatePulse(busPulse, mrtPulse, taxiPulse, parkingPulse);
 
         console.log({
 
@@ -356,7 +371,9 @@ const mrtForecast = mrtForecastRaw.filter(
 
             mrtPulse,
 
-            taxiPulse
+            taxiPulse,
+
+            parkingPulse
 
         });
 
