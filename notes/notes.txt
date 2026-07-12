@@ -1,0 +1,55 @@
+
+
+src/lib/lta.ts (complete)
+src/lib/datagov.ts (complete)
+src/app/api/carparks/nearby/route.ts (complete with PostGIS query and merge logic)
+In-memory caching layer (30–60 second TTL for LTA and data.gov)
+Testing endpoints and example responses
+
+
+
+===
+
+1.3890354250937107, 103.74335945454227 (Home)
+
+http://localhost:3000/api/carparks/nearby?lat=1.3890354250937107&lng=103.74335945454227&radius=500
+
+1.2826495473755732, 103.83903721454651 (Pearl's Hill)
+
+http://localhost:3000/api/carparks/nearby?lat=1.2826495473755732&lng=103.83903721454651&radius=500
+
+1.2902452921930585, 103.85206349842917 (Padang)
+
+http://localhost:3000/api/carparks/nearby?lat=1.2902452921930585&lng=103.85206349842917&radius=500
+
+1.2897552003625212, 103.85719952065011 (Marina Bay)
+
+http://localhost:3000/api/carparks/nearby?lat=1.2897552003625212&lng=103.85719952065011&radius=500
+
+1.315155968376933, 103.88716087491632 (Geylang)
+
+http://localhost:3000/api/carparks/nearby?lat=1.315155968376933&lng=103.88716087491632&radius=500
+
+==
+
+http://localhost:3000/api/taxis/nearby?lat=1.3890354250937107&lng=103.74335945454227&radius=500
+
+http://localhost:3000/api/traffic/nearby?lat=1.2897552003625212&lng=103.85719952065011&radius=1000
+
+http://localhost:3000/api/bus-stops/nearby?lat=1.3939010144135249&lng=103.89915403557758&radius=500
+
+http://localhost:3000/api/bus-arrival?busStopCode=83139
+
+===
+
+
+
+If, in the future, you compute a combined Urban Pulse, you could use:
+
+Bus: 500 m
+MRT: 800–1000 m (to reflect a station's wider influence)
+Taxi: 1000–2000 m (because taxis are mobile and spread over a larger area)
+Traffic: 500–1000 m
+Parking: 300–500 m
+
+
