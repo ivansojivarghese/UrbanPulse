@@ -9,6 +9,8 @@ npm install
 npm run dev
 ```
 
+API services may update or refresh regularly. Some services may not function.
+
 Required environment variables:
 
 - `DATABASE_URL`
